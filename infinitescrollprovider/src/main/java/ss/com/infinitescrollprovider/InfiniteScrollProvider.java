@@ -1,10 +1,12 @@
 package ss.com.infinitescrollprovider;
 
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 /**
  * Created by Saeed Shahini on 8/8/16.
@@ -28,13 +30,6 @@ public class InfiniteScrollProvider {
     private OnLoadMoreListener onLoadMoreListener;
 
     /**
-     * {@link GridLayoutManager} that is attached to {@link #recyclerView}
-     * <p/>
-     * used to determine {@link #lastVisibleItem},{@link #totalItemCount},{@link #previousItemCount}
-     */
-    private RecyclerView.LayoutManager layoutManager;
-
-    /**
      * position of last visible item
      */
     private int lastVisibleItem;
@@ -50,9 +45,24 @@ public class InfiniteScrollProvider {
     private int previousItemCount = 0;
 
     /**
-     * {@link #onLoadMoreListener} called when {@link #recyclerView} reach to item with position {@link #totalItemCount} - {@value THRESHOLD}
+     * {@link #onLoadMoreListener} called when {@link #recyclerView} reach to item with position {@link #totalItemCount} - {#threshold}
      */
-    private static final int THRESHOLD = 3;
+    private int threshold;
+
+    private InfiniteScrollProvider(int threshold) {
+        this.threshold = threshold;
+    }
+
+    private InfiniteScrollProvider() {
+    }
+
+    public static InfiniteScrollProvider Builder(int threshold) {
+        return new InfiniteScrollProvider(threshold);
+    }
+
+    public static InfiniteScrollProvider Builder() {
+        return new InfiniteScrollProvider();
+    }
 
     /**
      * this function attach {@link #recyclerView} to provide infinite scroll for it
@@ -60,10 +70,12 @@ public class InfiniteScrollProvider {
      * @param recyclerView       see {@link #recyclerView} for more information
      * @param onLoadMoreListener callback for notifying when user reach list ends.
      */
+
+
     public void attach(RecyclerView recyclerView, OnLoadMoreListener onLoadMoreListener) {
         this.recyclerView = recyclerView;
         this.onLoadMoreListener = onLoadMoreListener;
-        layoutManager =recyclerView.getLayoutManager();
+        RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
         setInfiniteScrollGrid(layoutManager);
     }
 
@@ -74,34 +86,34 @@ public class InfiniteScrollProvider {
     private void setInfiniteScrollGrid(final RecyclerView.LayoutManager layoutManager) {
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 totalItemCount = layoutManager.getItemCount();
                 if (previousItemCount > totalItemCount) {
-                    previousItemCount = totalItemCount - THRESHOLD;
+                    previousItemCount = totalItemCount - threshold;
                 }
-                if (layoutManager instanceof GridLayoutManager){
-                    lastVisibleItem = ((GridLayoutManager)layoutManager).findLastVisibleItemPosition();
-                }else if (layoutManager instanceof LinearLayoutManager){
-                    lastVisibleItem = ((LinearLayoutManager)layoutManager).findLastVisibleItemPosition();
-                }else if (layoutManager instanceof StaggeredGridLayoutManager){
-                    StaggeredGridLayoutManager staggeredGridLayoutManager=(StaggeredGridLayoutManager) layoutManager;
-                    int spanCount=staggeredGridLayoutManager.getSpanCount();
-                    int[] ids=new int[spanCount];
+                if (layoutManager instanceof GridLayoutManager) {
+                    lastVisibleItem = ((GridLayoutManager) layoutManager).findLastVisibleItemPosition();
+                } else if (layoutManager instanceof LinearLayoutManager) {
+                    lastVisibleItem = ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition();
+                } else if (layoutManager instanceof StaggeredGridLayoutManager) {
+                    StaggeredGridLayoutManager staggeredGridLayoutManager = (StaggeredGridLayoutManager) layoutManager;
+                    int spanCount = staggeredGridLayoutManager.getSpanCount();
+                    int[] ids = new int[spanCount];
                     staggeredGridLayoutManager.findLastVisibleItemPositions(ids);
-                    int max=ids[0];
+                    int max = ids[0];
                     for (int i = 1; i < ids.length; i++) {
-                        if (ids[1]>max){
-                            max=ids[1];
+                        if (ids[1] > max) {
+                            max = ids[1];
                         }
                     }
-                    lastVisibleItem=max;
+                    lastVisibleItem = max;
                 }
-                if (totalItemCount > THRESHOLD) {
+                if (totalItemCount > threshold) {
                     if (previousItemCount <= totalItemCount && isLoading) {
                         isLoading = false;
                         Log.i("InfiniteScroll", "Data fetched");
                     }
-                    if (!isLoading && (lastVisibleItem > (totalItemCount - THRESHOLD)) && totalItemCount > previousItemCount) {
+                    if (!isLoading && (lastVisibleItem > (totalItemCount - threshold)) && totalItemCount > previousItemCount) {
                         if (onLoadMoreListener != null) {
                             onLoadMoreListener.onLoadMore();
                         }
@@ -114,8 +126,4 @@ public class InfiniteScrollProvider {
             }
         });
     }
-
-
-
-
 }

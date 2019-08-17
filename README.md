@@ -1,3 +1,4 @@
+# I(@MohammadMalekiRad)'ve made some changes in it.
 # Infinite-Scroll-Provider
 easy and very light library used to provide infinite scroll functionality for recycler views
 <img src="https://github.com/saeedsh92/Infinite-Scroll-Provider/blob/master/infinite-scroll-provider-demo.jpg?raw=false" width="700">
@@ -8,7 +9,7 @@ easy and very light library used to provide infinite scroll functionality for re
 ### Gradle: 
 add this line to your module build.gradle dependecies block:
 
-     compile 'ss.com.infinitescrollprovider:infinitescrollprovider:1.0'
+     compile 'ss.com.infinitescrollprovider:infinitescrollprovider:1.1.0'
 
 ### Maven
     <dependency>
@@ -21,8 +22,7 @@ add this line to your module build.gradle dependecies block:
 ## How use this lib
 you can attach your recycler view with infiniteScrollProvider like this:
 ```java
-  InfiniteScrollProvider infiniteScrollProvider = new InfiniteScrollProvider();
-  infiniteScrollProvider.attach(recyclerView, new OnLoadMoreListener() {
+  InfiniteScrollProvider.Builder(1).attach(recyclerView, new OnLoadMoreListener() {
     @Override
     public void onLoadMore() {
       //this method called when recycler view scrolled to the end

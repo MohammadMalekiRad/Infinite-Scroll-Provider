@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/Infinite-Scroll-Provider.iml" filepath="$PROJECT_DIR$/Infinite-Scroll-Provider.iml" />
       <module fileurl="file://$PROJECT_DIR$/InfiniteScrollProviderSample.iml" filepath="$PROJECT_DIR$/InfiniteScrollProviderSample.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/infinitescrollprovider/infinitescrollprovider.iml" filepath="$PROJECT_DIR$/infinitescrollprovider/infinitescrollprovider.iml" />
